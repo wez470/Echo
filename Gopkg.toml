@@ -29,6 +29,10 @@
   name = "github.com/go-chi/chi"
   version = "4.0.2"
 
+[[constraint]]
+name = "github.com/go-chi/docgen"
+version = "1.0.5"
+
 [prune]
   go-tests = true
   unused-packages = true
