@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -15,8 +16,17 @@ const port = "8080"
 
 var generateDocs = flag.Bool("docs", false, "Generate server route documentation")
 
-//Server the application server
-type server struct{}
+//Server represents the application server
+type server struct {
+	router *chi.Mux
+}
+
+func (s *server) setupRoutes() {
+	s.router.Use(middleware.Logger)
+	s.router.Use(middleware.RedirectSlashes)
+	s.router.HandleFunc("/echoBody", s.echoBody())
+	s.router.HandleFunc("/echo", s.echo())
+}
 
 func (s *server) echoBody() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -40,9 +50,9 @@ func (s *server) echo() http.HandlerFunc {
 	}
 }
 
-func conditionallyPrintDocs(r *chi.Mux) {
+func (s *server) conditionallyPrintApiDocs() {
 	if *generateDocs {
-		fmt.Println(docgen.MarkdownRoutesDoc(r, docgen.MarkdownOpts{
+		fmt.Println(docgen.MarkdownRoutesDoc(s.router, docgen.MarkdownOpts{
 			ProjectPath: "github.com/wez470/Echo",
 			Intro:       "Echo server generated docs.",
 		}))
@@ -52,12 +62,9 @@ func conditionallyPrintDocs(r *chi.Mux) {
 
 func main() {
 	flag.Parse()
-	s := server{}
-	r := chi.NewRouter()
-	r.Use(middleware.Logger)
-	r.Use(middleware.RedirectSlashes)
-	r.HandleFunc("/echoBody", s.echoBody())
-	r.HandleFunc("/echo", s.echo())
-	conditionallyPrintDocs(r)
-	http.ListenAndServe(":"+port, r)
+	s := server{router: chi.NewRouter()}
+	s.setupRoutes()
+	s.conditionallyPrintApiDocs()
+	log.Printf("Starting server on port: %v\n", port)
+	http.ListenAndServe(":"+port, s.router)
 }
