@@ -66,3 +66,21 @@ func TestEchoBodyApi(t *testing.T) {
 		t.Fatalf("Request and response body differ")
 	}
 }
+
+type badBody struct{}
+
+func (t badBody) Read(p []byte) (int, error) {
+	return 0, fmt.Errorf("error")
+}
+
+func TestEchoBodyReturns500OnCopyError(t *testing.T) {
+	s := server{router: chi.NewRouter()}
+	s.setupRoutes()
+
+	r := httptest.NewRequest("GET", "/echoBody", badBody{})
+	w := httptest.NewRecorder()
+	s.router.ServeHTTP(w, r)
+	if !reflect.DeepEqual(w.Code, http.StatusInternalServerError) {
+		t.Fatalf("Response status not 500")
+	}
+}
