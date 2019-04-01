@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 
@@ -16,7 +16,7 @@ const port = "8080"
 
 var generateDocs = flag.Bool("docs", false, "Generate server route documentation")
 
-//Server represents the application server
+//server represents the application server
 type server struct {
 	router *chi.Mux
 }
@@ -30,13 +30,12 @@ func (s *server) setupRoutes() {
 
 func (s *server) echoBody() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		buf, err := ioutil.ReadAll(r.Body)
+		_, err := io.Copy(w, r.Body)
 		if err != nil {
 			w.WriteHeader(500)
 			w.Write([]byte("Failed to read request body."))
 			return
 		}
-		w.Write(buf)
 	}
 }
 

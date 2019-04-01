@@ -18,10 +18,7 @@ func TestEchoApi(t *testing.T) {
 
 	expectedStrs := []string{"GET /echo HTTP/1.1\r", "Host: \r", "User-Agent: Go-http-client/1.1\r", "\r", ""}
 
-	r, err := http.NewRequest("GET", "/echo", nil)
-	if err != nil {
-		t.Fatalf("Failed to create fake http request")
-	}
+	r := httptest.NewRequest("GET", "/echo", nil)
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, r)
 	if !reflect.DeepEqual(w.Code, http.StatusOK) {
@@ -44,15 +41,12 @@ func TestEchoBodyApi(t *testing.T) {
 		Key string `json:"key"`
 	}
 	expectedBody := body{Key: "MyValue"}
-	jsonBody, err := json.Marshal(expectedBody)
+	jsonBody, _ := json.Marshal(expectedBody)
 
 	s := server{router: chi.NewRouter()}
 	s.setupRoutes()
 
-	r, err := http.NewRequest("GET", "/echoBody", bytes.NewReader(jsonBody))
-	if err != nil {
-		t.Fatalf("Failed to create fake http request")
-	}
+	r := httptest.NewRequest("GET", "/echoBody", bytes.NewReader(jsonBody))
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, r)
 	if !reflect.DeepEqual(w.Code, http.StatusOK) {
@@ -61,7 +55,7 @@ func TestEchoBodyApi(t *testing.T) {
 
 	bodyBytes := w.Body.Bytes()
 	responseBody := &body{}
-	err = json.Unmarshal(bodyBytes, responseBody)
+	err := json.Unmarshal(bodyBytes, responseBody)
 	if err != nil {
 		t.Fatalf("Failed to unmarshal response")
 	}
