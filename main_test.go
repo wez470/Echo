@@ -16,7 +16,7 @@ func TestEchoApi(t *testing.T) {
 	s := server{router: chi.NewRouter()}
 	s.setupRoutes()
 
-	expectedStrs := []string{"GET /echo HTTP/1.1\r", "Host: \r", "User-Agent: Go-http-client/1.1\r", "\r", ""}
+	expectedStr := "GET /echo HTTP/1.1\r"
 
 	r := httptest.NewRequest("GET", "/echo", nil)
 	w := httptest.NewRecorder()
@@ -27,12 +27,10 @@ func TestEchoApi(t *testing.T) {
 
 	responseStrs := strings.Split(w.Body.String(), "\n")
 
-	for i := range responseStrs {
-		if strings.Compare(expectedStrs[i], responseStrs[i]) != 0 {
-			fmt.Println("Expected: ", expectedStrs[i])
-			fmt.Println("Actual:   ", responseStrs[i])
-			t.Fatalf("Expect response differs from actual")
-		}
+	if strings.Compare(expectedStr, responseStrs[0]) != 0 {
+		fmt.Println("Expected: ", expectedStr)
+		fmt.Println("Actual:   ", responseStrs[0])
+		t.Fatalf("Expect response differs from actual")
 	}
 }
 
