@@ -1,4 +1,6 @@
 # Echo Server
+[![Build Status](https://travis-ci.org/wez470/Rugby.svg?branch=master)](https://travis-ci.org/wez470/Rugby) 
+
 A simple echo server written in Go
 
 ## Building and Running
