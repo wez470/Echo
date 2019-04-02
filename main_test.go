@@ -12,6 +12,18 @@ import (
 	"testing"
 )
 
+func TestUnauthorizedRequestReturns401(t *testing.T) {
+	s := server{router: chi.NewRouter()}
+	s.setupRoutes()
+
+	r := httptest.NewRequest("GET", "/echo", nil)
+	w := httptest.NewRecorder()
+	s.router.ServeHTTP(w, r)
+	if !reflect.DeepEqual(w.Code, http.StatusUnauthorized) {
+		t.Fatalf("Response status not 401")
+	}
+}
+
 func TestEchoApi(t *testing.T) {
 	s := server{router: chi.NewRouter()}
 	s.setupRoutes()
@@ -19,6 +31,7 @@ func TestEchoApi(t *testing.T) {
 	expectedStr := "GET /echo HTTP/1.1\r"
 
 	r := httptest.NewRequest("GET", "/echo", nil)
+	r.Header.Set("Authorization", authKey)
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, r)
 	if !reflect.DeepEqual(w.Code, http.StatusOK) {
@@ -45,6 +58,7 @@ func TestEchoBodyApi(t *testing.T) {
 	s.setupRoutes()
 
 	r := httptest.NewRequest("GET", "/echoBody", bytes.NewReader(jsonBody))
+	r.Header.Set("Authorization", authKey)
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, r)
 	if !reflect.DeepEqual(w.Code, http.StatusOK) {
@@ -76,6 +90,7 @@ func TestEchoBodyReturns500OnCopyError(t *testing.T) {
 	s.setupRoutes()
 
 	r := httptest.NewRequest("GET", "/echoBody", badBody{})
+	r.Header.Set("Authorization", authKey)
 	w := httptest.NewRecorder()
 	s.router.ServeHTTP(w, r)
 	if !reflect.DeepEqual(w.Code, http.StatusInternalServerError) {
