@@ -1,5 +1,5 @@
 # Echo Server
-[![Build Status](https://travis-ci.org/wez470/Rugby.svg?branch=master)](https://travis-ci.org/wez470/Rugby) 
+[![Build Status](https://travis-ci.org/wez470/Echo.svg?branch=master)](https://travis-ci.org/wez470/Echo) 
 
 A simple echo server written in Go
 
