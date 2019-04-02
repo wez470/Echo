@@ -31,6 +31,7 @@ func (s *server) setupRoutes() {
 	s.router.HandleFunc("/echo", s.echo())
 }
 
+//authenticationMiddleware authenticates a user through the Authorization header
 func authenticationMiddleware(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header["Authorization"]
