@@ -18,6 +18,10 @@ Run
 dep ensure
 go run .
 ```
-
+Alternatively, a binary can be built and ran with
+```
+go build -o echo-server
+./echo-server
+```
 ### Auth
 To authenticate requests, clients will need to send the `Authorization` header set to `Basic dXNlcjpwYXNzd29yZA==`
