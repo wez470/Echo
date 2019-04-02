@@ -25,3 +25,9 @@ go build -o echo-server
 ```
 ### Auth
 To authenticate requests, clients will need to send the `Authorization` header set to `Basic dXNlcjpwYXNzd29yZA==`
+
+## Tests
+Run tests with
+```
+go test
+```
