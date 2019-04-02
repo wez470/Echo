@@ -49,21 +49,18 @@ func (s *server) echo() http.HandlerFunc {
 	}
 }
 
-func (s *server) conditionallyPrintAPIDocs() {
-	if *generateDocs {
-		fmt.Println(docgen.MarkdownRoutesDoc(s.router, docgen.MarkdownOpts{
-			ProjectPath: "github.com/wez470/Echo",
-			Intro:       "Echo server generated docs.",
-		}))
-		return
-	}
+func (s *server) printAPIDocs() {
+	fmt.Println(docgen.JSONRoutesDoc(s.router))
 }
 
 func main() {
 	flag.Parse()
 	s := server{router: chi.NewRouter()}
 	s.setupRoutes()
-	s.conditionallyPrintAPIDocs()
+	if *generateDocs {
+		s.printAPIDocs()
+		return
+	}
 	log.Printf("Starting server on port: %v\n", port)
 	http.ListenAndServe(":"+port, s.router)
 }

@@ -1,0 +1,50 @@
+{
+  "router": {
+    "middlewares": [
+      {
+        "pkg": "personal/Echo/vendor/github.com/go-chi/chi/middleware",
+        "func": "Logger",
+        "comment": "Logger is a middleware that logs the start and end of each request, along\nwith some useful data about what was requested, what the response status was,\nand how long it took to return. When standard output is a TTY, Logger will\nprint in color, otherwise it will print in black and white. Logger prints a\nrequest ID if one is provided.\n\nAlternatively, look at https://github.com/pressly/lg and the `lg.RequestLogger`\nmiddleware pkg.\n",
+        "file": "personal/Echo/vendor/github.com/go-chi/chi/middleware/logger.go",
+        "line": 30
+      },
+      {
+        "pkg": "personal/Echo/vendor/github.com/go-chi/chi/middleware",
+        "func": "RedirectSlashes",
+        "comment": "RedirectSlashes is a middleware that will match request paths with a trailing\nslash and redirect to the same path, less the trailing slash.\n\nNOTE: RedirectSlashes middleware is *incompatible* with http.FileServer,\nsee https://github.com/go-chi/chi/issues/343\n",
+        "file": "personal/Echo/vendor/github.com/go-chi/chi/middleware/strip.go",
+        "line": 35
+      }
+    ],
+    "routes": {
+      "/echo": {
+        "handlers": {
+          "*": {
+            "middlewares": [],
+            "method": "*",
+            "pkg": "",
+            "func": "main.(*server).echo.func1",
+            "comment": "",
+            "file": "personal/Echo/main.go",
+            "line": 43,
+            "anonymous": true
+          }
+        }
+      },
+      "/echoBody": {
+        "handlers": {
+          "*": {
+            "middlewares": [],
+            "method": "*",
+            "pkg": "",
+            "func": "main.(*server).echoBody.func1",
+            "comment": "",
+            "file": "personal/Echo/main.go",
+            "line": 32,
+            "anonymous": true
+          }
+        }
+      }
+    }
+  }
+}
