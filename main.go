@@ -21,6 +21,7 @@ type server struct {
 	router *chi.Mux
 }
 
+//setupRoutes sets up application routes and middleware
 func (s *server) setupRoutes() {
 	s.router.Use(middleware.Logger)
 	s.router.Use(middleware.RedirectSlashes)
@@ -28,6 +29,7 @@ func (s *server) setupRoutes() {
 	s.router.HandleFunc("/echo", s.echo())
 }
 
+//echoBody returns a handler that returns the request body
 func (s *server) echoBody() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, err := io.Copy(w, r.Body)
@@ -39,6 +41,7 @@ func (s *server) echoBody() http.HandlerFunc {
 	}
 }
 
+//echo returns a handler that returns the request
 func (s *server) echo() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.Write(w)
@@ -49,6 +52,7 @@ func (s *server) echo() http.HandlerFunc {
 	}
 }
 
+//printAPIDocs prints out API docs as JSON
 func (s *server) printAPIDocs() {
 	fmt.Println(docgen.JSONRoutesDoc(s.router))
 }
